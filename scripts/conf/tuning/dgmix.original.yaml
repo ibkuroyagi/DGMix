@@ -1,0 +1,56 @@
+###########################################################
+#                NETWORK ARCHITECTURE SETTING             #
+###########################################################
+model_type: VICReg
+model_params:
+  n_fft: 1024
+  hop_length: 512
+  n_mels: 128
+  power: 1.0
+  mlp: "1280-1280-1280"
+  embedding_size: 320
+###########################################################
+#                    MIXUP SETTING                        #
+###########################################################
+mixup_alpha: 0.5
+###########################################################
+#                  DATA LOADER SETTING                    #
+###########################################################
+accum_grads: 1
+batch_size: 128 #2048 # Batch size.
+finetune_batch_size: 64 # Batch size.
+pin_memory: true # Whether to pin memory in Pytorch DataLoader.
+num_workers: 1 # Number of workers in Pytorch DataLoader.
+allow_cache: true # Whether to allow cache in dataset. If true, it requires cpu memory.
+###########################################################
+#             OPTIMIZER & SCHEDULER SETTING               #
+###########################################################
+optimizer_type: LARS
+optimizer_params:
+  lr: 0.8
+  weight_decay: 1.0e-4
+
+finetune_optimizer_type: AdamW
+finetune_optimizer_params:
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+
+scheduler_type: CosineLRScheduler
+scheduler_params:
+  t_initial: 100
+  lr_min: 2.0e-3 
+  warmup_t: 10
+  warmup_lr_init: 0
+  warmup_prefix: true
+###########################################################
+#                    INTERVAL SETTING                     #
+###########################################################
+train_max_epochs: 100 # Number of training steps.
+save_interval_epochs: 50 # Interval steps to save checkpoint.
+log_interval_epochs: 5 # Interval steps to record the training log.
+finetune_epochs: 20
+###########################################################
+#                     OTHER SETTING                       #
+###########################################################
+sf: 16000 # Sampling rate.
+sec: 2.0
