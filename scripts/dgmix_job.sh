@@ -14,7 +14,14 @@ machines="fan gearbox bearing valve slider ToyCar ToyTrain"
 set -euo pipefail
 epochs="50 100 120"
 
-# machines="fan"
+if [ "${stage}" -le 0 ] && [ "${stage}" -ge 0 ]; then
+    log "Prepare datasets."
+    log "This command should be executed only the first time."
+    sbatch -p ubuntu ./dgmix_run.sh \
+        --stage "1" \
+        --stop_stage "2" \
+        --seed "${seed}"
+fi
 
 if [ "${stage}" -le 1 ] && [ "${stage}" -ge 1 ]; then
     for machine in ${machines}; do

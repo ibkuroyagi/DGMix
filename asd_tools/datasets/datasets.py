@@ -32,6 +32,7 @@ class WaveDataset(Dataset):
         items = {"path": series["path"]}
         wave, _ = librosa.load(path=series["path"], sr=16000)
         items["wave"] = wave - wave.mean()
+        items["machine"] = series["machine"]
         items["section"] = series["section"]  # 0, 1, ..,5
         items["state"] = series["state"]  # normal or anomaly
         items["domain"] = series["domain"]  # source or target

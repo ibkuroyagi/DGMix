@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 
 class DGMixTrainer(object):
-    """Customized trainer module for GDMix training."""
+    """Customized trainer module for DGMix training."""
 
     def __init__(
         self,
@@ -232,24 +232,13 @@ class DGMixTrainer(object):
                 spec = torch.cat(
                     [spec, F.resize(img=y_["spec"], size=(h, w)).cpu()], dim=0
                 )
-                for machine, id_, phase, domain, state in zip(
-                    b["machine"],
+                for id_, phase, domain, state in zip(
                     b["section"],
                     b["phase"],
                     b["domain"],
                     b["state"],
                 ):
-                    label = (
-                        machine
-                        + "_"
-                        + str(id_)
-                        + "_"
-                        + phase
-                        + "_"
-                        + domain
-                        + "_"
-                        + state
-                    )
+                    label = str(id_) + "_" + phase + "_" + domain + "_" + state
                     label_list.append(label)
         self.writer.add_embedding(
             embed,

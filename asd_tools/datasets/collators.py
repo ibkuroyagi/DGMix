@@ -71,6 +71,7 @@ class WaveEvalCollator(object):
         items["section"] = np.array([b["section"] for b in batch])
         items["path"] = np.array([b["path"] for b in batch])
         items["state"] = np.array([b["state"] for b in batch])
+        items["machine"] = np.array([b["machine"] for b in batch])
         items["domain"] = np.array([b["domain"] for b in batch])
         items["phase"] = np.array([b["phase"] for b in batch])
         return items
