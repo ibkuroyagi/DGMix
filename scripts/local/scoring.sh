@@ -38,5 +38,5 @@ for epoch in ${epochs}; do
     score_checkpoints+="exp/all/${no}/checkpoint-${epoch}epochs/score.csv "
 done
 # shellcheck disable=SC2086
-python -m asd_tools.bin.scoring --feature "" --agg_checkpoints ${score_checkpoints} --concat
+python -m asd_tools.bin.scoring --agg_checkpoints ${score_checkpoints} --concat
 echo "Successfully finished scoring."

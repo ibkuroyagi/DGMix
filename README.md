@@ -28,11 +28,21 @@ To run the recipe, please follow the below instruction.
 # Let us move on the recipe directory
 $ cd scripts
 
-$ ./job.sh --stage 0
-$ ./job.sh --stage 1
-$ ./job.sh --stage 2
+$ ./job.sh
 
 ```
+
+## Results
+
+Results of this model can be seen in scripts/exp/all/dgmix.original/checkpoint-120epochs/score.md.  
+These scores are harmonic mean of AUC [%].  
+
+|             |     AUC |   bearing_auc |   fan_auc |   gearbox_auc |   valve_auc |   slider_auc |   ToyCar_auc |   ToyTrain_auc |
+|:------------|--------:|--------------:|----------:|--------------:|------------:|-------------:|-------------:|---------------:|
+| source_dev  | 55.6417 |       52.3611 |   54.3536 |       69.2407 |     49.9643 |      66.6902 |      57.2063 |        46.7799 |
+| source_eval | 55.0961 |       55.8166 |   51.8338 |       58.1005 |     53.6397 |      63.544  |      53.0038 |        51.5879 |
+| target_dev  | 51.5993 |       55.1491 |   55.9276 |       65.069  |     36.9344 |      52.9252 |      50.6347 |        53.8774 |
+| target_eval | 52.6867 |       54.7691 |   46.7551 |       53.7797 |     55.2403 |      51.855  |      54.2659 |        53.1774 |
 
 ## Reference
 

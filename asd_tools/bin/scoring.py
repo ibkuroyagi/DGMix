@@ -16,6 +16,16 @@ from scipy.stats import hmean
 from sklearn.metrics import roc_auc_score
 
 warnings.simplefilter("ignore")
+domains = ["source", "target"]
+machines = [
+    "bearing",
+    "fan",
+    "gearbox",
+    "valve",
+    "slider",
+    "ToyCar",
+    "ToyTrain",
+]
 
 
 def get_args():
@@ -62,16 +72,7 @@ def main(args):
     """Run scoring process."""
     modes = ["eval", "dev"]
     sections = {"dev": [0, 1, 2], "eval": [3, 4, 5]}
-    domains = ["source", "target"]
-    machines = [
-        "bearing",
-        "fan",
-        "gearbox",
-        "valve",
-        "slider",
-        "ToyCar",
-        "ToyTrain",
-    ]
+
     # for dcase 2023 metric (AUC_machine_section_domain=7*3*3domain, pAUC_machine_section=7*3)
     dcase2022_cols_dict = {
         "eval_official": [],  # harmonic mean of source, target, and pAUC
@@ -124,6 +125,12 @@ def main(args):
             ["exp", "all"] + os.path.dirname(args.agg_checkpoints[0]).split("/")[2:]
         ),
         "score.csv",
+    )
+    save_md_path = os.path.join(
+        "/".join(
+            ["exp", "all"] + os.path.dirname(args.agg_checkpoints[0]).split("/")[2:]
+        ),
+        "score.md",
     )
     score_df.loc[:, "path"] = save_path
     for agg_path in args.agg_checkpoints:
@@ -205,6 +212,7 @@ def main(args):
     score_df = score_df.reset_index().rename(columns={"index": "post_process"})
     score_df.to_csv(save_path, index=False)
     logging.info(f"Successfully saved at {save_path}")
+    write_md(score_df, save_md_path)
 
 
 def concat_scores(args):
@@ -216,6 +224,39 @@ def concat_scores(args):
     save_path = "/".join(agg_checkpoint.split("/")[:-2] + ["score.csv"])
     score_df.to_csv(save_path, index=False)
     logging.info(f"Concatenated file is saved at {save_path}.")
+    save_md_path = "/".join(agg_checkpoint.split("/")[:-2] + ["score.md"])
+    write_md(score_df, save_md_path)
+
+
+def write_md(score_df, save_md_path):
+    cols = ["AUC"]
+    df_list = []
+    for domain in domains:
+        dev_cols = [f"dev_AUC_{domain}"]
+        eval_cols = [f"eval_AUC_{domain}"]
+        post_process = "KNN_1_all"
+        for machine in machines:
+            dev_cols.append(f"dev_{domain}_{machine}_auc")
+            eval_cols.append(f"eval_{domain}_{machine}_auc")
+            if domain == "source":
+                cols.append(f"{machine}_auc")
+        dev_df = score_df.loc[score_df["post_process"] == post_process, dev_cols]
+        eval_df = score_df.loc[score_df["post_process"] == post_process, eval_cols]
+        df_list.append(
+            pd.DataFrame(
+                [dev_df.values.flatten(), eval_df.values.flatten()],
+                columns=cols,
+                index=[f"{domain}_dev", f"{domain}_eval"],
+            )
+            * 100
+        )
+
+    compare_df = pd.concat(df_list, axis=0)
+    md_txt = compare_df.to_markdown()
+    logging.info(md_txt)
+    with open(save_md_path, mode="w") as f:
+        f.write(md_txt)
+    logging.info(f"Successfully saved at {save_md_path}")
 
 
 if __name__ == "__main__":
