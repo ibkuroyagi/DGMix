@@ -1,4 +1,4 @@
-# Anomalous Sound Detection with Pytorch
+# DG-Mix: Domain Generalization for Anomalous Sound Detection Based on Self-Supervised Learning
 
 This repository is a non official reproduction of "DG-Mix: Domain Generalization for Anomalous Sound Detection Based on Self-Supervised Learning."
 
